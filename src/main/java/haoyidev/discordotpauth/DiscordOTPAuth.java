@@ -24,41 +24,33 @@ public final class DiscordOTPAuth extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         instance = this;
+        
+        try {
+            configManager = new ConfigManager(this);
+            if (!configManager.loadConfig()) {
+                getLogger().severe("Không thể load config plugin, plugin đang tắt...");
+                getServer().getPluginManager().disablePlugin(this);
+                return;
+            }
 
-        configManager = new ConfigManager(this);
-        if (!configManager.loadConfig()) {
-            getLogger().severe("Khong load duoc config plugin, plugin đang tat...");
+            discordManager = new DiscordManager(configManager.getBotToken());
+            if (!discordManager.initialize()) {
+                getLogger().severe("Không thể kết nối Discord bot, plugin đang tắt...");
+                getServer().getPluginManager().disablePlugin(this);
+                return;
+            }
+
+            authManager = new AuthManager(this);
+
+            registerEvents();
+            registerCommands();
+            
+            printStartupMessage();
+            
+        } catch (Exception e) {
+            getLogger().severe("Lỗi khi khởi động plugin: " + e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
-            return;
         }
-
-        discordManager = new DiscordManager(configManager.getBotToken());
-        if (!discordManager.initialize()) {
-            getLogger().severe("Khong load duoc bot discord, plugin đang tat...");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
-        authManager = new AuthManager(this);
-
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
-        getServer().getPluginManager().registerEvents(this, this);
-        // Gao Dep Chai
-        getCommand("otp").setExecutor(new OTPCommand(this));
-        getCommand("discordotp").setExecutor(new ReloadCommand(this));
-        getLogger().info("   __ __               _   ___          ");
-        getLogger().info("  / // /__ ____  __ __(_) / _ \\___ _  __");
-        getLogger().info(" / _  / _ `/ _ \\/ // / / / // / -_) |/ /");
-        getLogger().info("/_//_/\\_,_/\\___/\\_, /_/ /____/\\__/|___/ ");
-        getLogger().info("               /___/                    ");
-        getLogger().info("DiscordOTPAuth đã được bật!!");
-        getLogger().info("===================================");
-        getLogger().info("Cảm ơn bạn đã sử dụng plugin.:");
-        getLogger().info("Author: Haoyi Developer");
-        getLogger().info("Version: 1.0.0");
-        getLogger().info("Description: Plugin này giúp bạn đăng nhập bằng OTP thay vì Password");
-        getLogger().info("===================================");
     }
 
     @Override
@@ -67,6 +59,32 @@ public final class DiscordOTPAuth extends JavaPlugin implements Listener {
             discordManager.shutdown();
         }
         getLogger().info("DiscordOTPAuth đã được tắt!");
+    }
+
+    private void registerEvents() {
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
+        getServer().getPluginManager().registerEvents(this, this);
+    }
+
+    private void registerCommands() {
+        getCommand("otp").setExecutor(new OTPCommand(this));
+        getCommand("discordotp").setExecutor(new ReloadCommand(this));
+    }
+
+    private void printStartupMessage() {
+        getLogger().info("   __ __               _   ___          ");
+        getLogger().info("  / // /__ ____  __ __(_) / _ \\___ _  __");
+        getLogger().info(" / _  / _ `/ _ \\/ // / / / // / -_) |/ /");
+        getLogger().info("/_//_/\\_,_/\\___/\\_, /_/ /____/\\__/|___/ ");
+        getLogger().info("               /___/                    ");
+        getLogger().info("DiscordOTPAuth đã được bật!!");
+        getLogger().info("===================================");
+        getLogger().info("Cảm ơn bạn đã sử dụng plugin:");
+        getLogger().info("Author: Haoyi Developer");
+        getLogger().info("Version: 1.0.0");
+        getLogger().info("Description: Plugin xác thực OTP qua Discord");
+        getLogger().info("===================================");
     }
 
     @EventHandler

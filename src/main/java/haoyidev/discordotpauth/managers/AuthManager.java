@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 public class AuthManager {
     private final DiscordOTPAuth plugin;
@@ -22,16 +23,28 @@ public class AuthManager {
 
     public AuthManager(DiscordOTPAuth plugin) {
         this.plugin = plugin;
+        startCleanupTask();
     }
 
     public void requestAuth(Player player, String discordId) {
-        if (!plugin.getDiscordManager().isUserValid(discordId)) {
+        if (!plugin.getDiscordManager().isConnected()) {
+            player.kickPlayer("§cDiscord bot đang offline! Vui lòng liên hệ admin.");
+            return;
+        }
+
+        if (!isValidDiscordId(discordId)) {
             player.kickPlayer("§cDiscord ID không hợp lệ! Vui lòng kiểm tra lại.");
+            return;
+        }
+
+        if (!plugin.getDiscordManager().isUserValid(discordId)) {
+            player.kickPlayer("§cDiscord ID không tồn tại! Vui lòng kiểm tra lại.");
             return;
         }
 
         String otp = generateOTP();
         pendingAuths.put(player.getUniqueId(), new AuthSession(discordId, otp, System.currentTimeMillis()));
+        restrictedPlayers.add(player.getUniqueId());
 
         plugin.getDiscordManager().sendOTP(discordId, otp).thenAccept(sent -> {
             if (sent) {
@@ -50,8 +63,9 @@ public class AuthManager {
             return false;
         }
 
-        if (System.currentTimeMillis() - session.getTimestamp() > 300000) { // 5 phút là otp cook
+        if (System.currentTimeMillis() - session.getTimestamp() > 300000) { // 5 phút
             pendingAuths.remove(player.getUniqueId());
+            restrictedPlayers.remove(player.getUniqueId());
             player.kickPlayer("§cMã OTP đã hết hạn!");
             logAuthAttempt(player, session.getDiscordId(), inputOtp, "EXPIRED");
             return false;
@@ -59,7 +73,7 @@ public class AuthManager {
 
         if (session.getOtp().equals(inputOtp)) {
             pendingAuths.remove(player.getUniqueId());
-            removeRestrictedPlayer(player.getUniqueId());
+            restrictedPlayers.remove(player.getUniqueId());
             player.sendMessage("§aXác thực thành công! Chào mừng đến với server.");
             logAuthAttempt(player, session.getDiscordId(), inputOtp, "SUCCESS");
             return true;
@@ -80,10 +94,20 @@ public class AuthManager {
 
     public void removeRestrictedPlayer(UUID playerId) {
         restrictedPlayers.remove(playerId);
+        pendingAuths.remove(playerId);
     }
 
     public boolean isPlayerRestricted(UUID playerId) {
         return restrictedPlayers.contains(playerId);
+    }
+
+    private boolean isValidDiscordId(String discordId) {
+        try {
+            Long.parseLong(discordId);
+            return discordId.length() >= 17 && discordId.length() <= 19;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     private String generateOTP() {
@@ -91,7 +115,7 @@ public class AuthManager {
     }
 
     private void logAuthAttempt(Player player, String discordId, String otp, String status) {
-        String logEntry = String.format("[%s] Ten: %s, IPv4: %s, Discord: %s, OTP: %s, Tinh Trang: %s",
+        String logEntry = String.format("[%s] Player: %s, IP: %s, Discord: %s, OTP: %s, Status: %s",
                 LocalDateTime.now().format(formatter),
                 player.getName(),
                 player.getAddress().getAddress().getHostAddress(),
@@ -104,9 +128,22 @@ public class AuthManager {
                 writer.write(logEntry);
                 writer.newLine();
             } catch (IOException e) {
-                plugin.getLogger().warning("Khong the ghi vao log auth: " + e.getMessage());
+                plugin.getLogger().warning("Không thể ghi vào log auth: " + e.getMessage());
             }
         });
+    }
+
+    private void startCleanupTask() {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            long currentTime = System.currentTimeMillis();
+            pendingAuths.entrySet().removeIf(entry -> {
+                if (currentTime - entry.getValue().getTimestamp() > 300000) {
+                    restrictedPlayers.remove(entry.getKey());
+                    return true;
+                }
+                return false;
+            });
+        }, 6000L, 6000L); // Chạy mỗi 5 phút
     }
 
     private static class AuthSession {
