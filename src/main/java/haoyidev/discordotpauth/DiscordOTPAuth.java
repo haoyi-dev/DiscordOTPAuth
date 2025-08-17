@@ -42,13 +42,26 @@ public final class DiscordOTPAuth extends JavaPlugin implements Listener {
 
             authManager = new AuthManager(this);
 
+            // Dang_ky_su_kien
+            if (getCommand("otp") != null) {
+                getCommand("otp").setExecutor(new OTPCommand(this));
+            } else {
+                getLogger().warning("Câu lệnh 'otp' không tồn tại.");
+            }
+            
+            if (getCommand("discordotp") != null) {
+                getCommand("discordotp").setExecutor(new ReloadCommand(this));
+            } else {
+                getLogger().warning("Câu lệnh 'discordotp' không tồn tại.");
+            }
+
             registerEvents();
-            registerCommands();
             
             printStartupMessage();
             
         } catch (Exception e) {
             getLogger().severe("Lỗi khi khởi động plugin: " + e.getMessage());
+            e.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);
         }
     }
@@ -65,11 +78,6 @@ public final class DiscordOTPAuth extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
         getServer().getPluginManager().registerEvents(this, this);
-    }
-
-    private void registerCommands() {
-        getCommand("otp").setExecutor(new OTPCommand(this));
-        getCommand("discordotp").setExecutor(new ReloadCommand(this));
     }
 
     private void printStartupMessage() {
@@ -89,14 +97,14 @@ public final class DiscordOTPAuth extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        if (authManager.isPlayerRestricted(event.getPlayer().getUniqueId())) {
+        if (authManager != null && authManager.isPlayerRestricted(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        if (authManager.isPlayerRestricted(event.getPlayer().getUniqueId())) {
+        if (authManager != null && authManager.isPlayerRestricted(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
             event.getPlayer().sendMessage("§6[OTP] §cBạn cần xác thực trước khi chat!");
         }
@@ -104,7 +112,7 @@ public final class DiscordOTPAuth extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
-        if (authManager.isPlayerRestricted(event.getPlayer().getUniqueId())) {
+        if (authManager != null && authManager.isPlayerRestricted(event.getPlayer().getUniqueId())) {
             String command = event.getMessage().toLowerCase();
             if (!command.startsWith("/otp")) {
                 event.setCancelled(true);
@@ -115,7 +123,9 @@ public final class DiscordOTPAuth extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        authManager.removeRestrictedPlayer(event.getPlayer().getUniqueId());
+        if (authManager != null) {
+            authManager.removeRestrictedPlayer(event.getPlayer().getUniqueId());
+        }
     }
 
     public static DiscordOTPAuth getInstance() {

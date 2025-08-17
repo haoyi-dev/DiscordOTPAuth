@@ -7,12 +7,16 @@ description: Plugin xác thực OTP qua Discord cho Minecraft server
 commands:
   otp:
     description: Lệnh xác thực OTP
-    usage: /otp send <discord_id> hoặc /otp <mã_otp>
+    usage: /otp <mã_otp>
+    aliases: [otpauth]
   discordotp:
     description: Lệnh quản lý DiscordOTPAuth
     usage: /discordotp reload
-    aliases: [dauth]
+    aliases: [dauth, discordauth]
 permissions:
   discordotp.reload:
     description: Cho phép reload DiscordOTPAuth plugin
     default: op
+  discordotp.use:
+    description: Cho phép sử dụng lệnh OTP
+    default: true

@@ -115,7 +115,7 @@ public class AuthManager {
     }
 
     private void logAuthAttempt(Player player, String discordId, String otp, String status) {
-        String logEntry = String.format("[%s] Player: %s, IP: %s, Discord: %s, OTP: %s, Status: %s",
+        String logEntry = String.format("[%s] Người Chơi: %s, IPv4: %s, Discord: %s, OTP: %s, Tình Trạng: %s",
                 LocalDateTime.now().format(formatter),
                 player.getName(),
                 player.getAddress().getAddress().getHostAddress(),

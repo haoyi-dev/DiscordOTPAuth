@@ -1,9 +1,12 @@
-name: DiscordOtpAuth
+name: DiscordOTPAuth
 version: 1.0.0
 main: haoyidev.discordotpauth.DiscordOTPAuth
-api-version: 1.19
+api-version: 1.21
 
 libraries:
   - net.dv8tion:JDA:5.1.0
   - com.squareup.okhttp3:okhttp:4.12.0
   - org.jetbrains.kotlin:kotlin-stdlib:1.9.24
+
+bootstrapper: haoyidev.discordotpauth.DiscordOTPAuth
+loader: haoyidev.discordotpauth.DiscordOTPAuth

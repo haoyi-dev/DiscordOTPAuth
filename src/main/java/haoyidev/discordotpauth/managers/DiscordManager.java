@@ -22,7 +22,7 @@ public class DiscordManager {
 
     public boolean initialize() {
         if (botToken == null || botToken.trim().isEmpty()) {
-            Bukkit.getLogger().severe("Bot token is empty or null!");
+            Bukkit.getLogger().severe("Token bot trống, vui lòng thêm token bot trong config.yml!");
             return false;
         }
 
@@ -36,10 +36,10 @@ public class DiscordManager {
 
             jda.awaitReady();
             isConnected = true;
-            Bukkit.getLogger().info("Discord bot connected successfully!");
+            Bukkit.getLogger().info("Discord Bot kết nối với plugin thành công!");
             return true;
         } catch (Exception e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Failed to initialize Discord bot: " + e.getMessage(), e);
+            Bukkit.getLogger().log(Level.SEVERE, "Lỗi không thể kết nối đến Bot Discord!: " + e.getMessage(), e);
             isConnected = false;
             return false;
         }
@@ -64,13 +64,13 @@ public class DiscordManager {
                                 "Sử dụng lệnh `/otp " + otp + "` trong game để đăng nhập.\n" +
                                 "Mã này sẽ hết hạn sau 5 phút.").queue(
                                 success -> {},
-                                failure -> Bukkit.getLogger().warning("Failed to send OTP to " + discordId + ": " + failure.getMessage())
+                                failure -> Bukkit.getLogger().warning("Không thể gửi được otp tới user " + discordId + ": " + failure.getMessage())
                         );
-                    }, failure -> Bukkit.getLogger().warning("Failed to open private channel for " + discordId + ": " + failure.getMessage()));
+                    }, failure -> Bukkit.getLogger().warning("Lỗi không thể mở kênh riêng tư cho" + discordId + ": " + failure.getMessage()));
                     return true;
                 }
             } catch (Exception e) {
-                Bukkit.getLogger().warning("Error sending OTP to " + discordId + ": " + e.getMessage());
+                Bukkit.getLogger().warning("Lỗi không thể gửi được OTP " + discordId + ": " + e.getMessage());
             }
             return false;
         });
@@ -93,9 +93,9 @@ public class DiscordManager {
                 jda.shutdown();
                 jda.awaitShutdown(5, TimeUnit.SECONDS);
                 isConnected = false;
-                Bukkit.getLogger().info("Discord bot disconnected.");
+                Bukkit.getLogger().info("Bot Discord đã ngắt kết nối!");
             } catch (Exception e) {
-                Bukkit.getLogger().warning("Error during Discord bot shutdown: " + e.getMessage());
+                Bukkit.getLogger().warning("Lỗi trong quá trình tắt bot Discord: " + e.getMessage());
             }
         }
     }
