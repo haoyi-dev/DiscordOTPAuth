@@ -1,23 +1,43 @@
-# Discord Bot Token
+# Discord Bot Configuration
 discord:
-  bot-token: "YOUR_DISCORD_BOT_TOKEN_HERE"
+  bot-token: "YOUR_BOT_TOKEN_HERE"
+  channel-id: "YOUR_CHANNEL_ID_HERE"
+  guild-id: "YOUR_GUILD_ID_HERE"
 
-# Logging Configuration
-logging:
-  file-path: "plugins/DiscordOTPAuth/log/auth.log"
-
-# Cấu hình OTP
+# OTP Settings
 otp:
-  # Độ dài của mã otp
-  length: 6  # Mặc định 6.
-  # Thời hạn hiệu lực của otp
-  expiration-minutes: 5 # Mặc định 5
+  code-length: 6
+  expiration-minutes: 5
+  max-attempts: 3
+  cooldown-seconds: 30
 
-# Tin nhắn / thông báo
+# IP Tracking Settings
+ip-tracking:
+  enabled: true
+  log-player-ips: true
+  max-accounts-per-ip: 5
+  alert-on-ip-limit: true
+
+# Messages
 messages:
-  kick-not-authenticated: "§cVui lòng sử dụng lệnh /otp send <discord_id> để đăng nhập!"
-  otp-sent: "§aĐã gửi mã OTP đến Discord của bạn! Vui lòng kiểm tra tin nhắn riêng."
-  otp-success: "§aXác thực thành công! Chào mừng đến với server."
-  otp-failed: "§cMã OTP không đúng! Vui lòng thử lại."
-  otp-expired: "§cMã OTP đã hết hạn!"
-  invalid-discord-id: "§cDiscord ID không hợp lệ! Vui lòng kiểm tra lại."
+  prefix: "§6[OTP] §r"
+  no-permission: "§cBạn không có quyền sử dụng lệnh này!"
+  usage-otp: "§eSử dụng: /otp <mã>"
+  usage-reload: "§eSử dụng: /discordotp reload"
+  usage-ipcheck: "§eSử dụng: /ipcheck <ip>"
+  config-reloaded: "§aCấu hình đã được reload thành công!"
+  invalid-code: "§cMã OTP không hợp lệ!"
+  code-expired: "§cMã OTP đã hết hạn!"
+  max-attempts-reached: "§cBạn đã đạt giới hạn thử lại. Vui lòng đợi!"
+  cooldown-active: "§cVui lòng đợi {time} giây trước khi thử lại!"
+  auth-success: "§aXác thực thành công!"
+  auth-failed: "§cXác thực thất bại!"
+  code-sent: "§aMã OTP đã được gửi đến Discord của bạn!"
+  no-discord-linked: "§cBạn chưa liên kết Discord với tài khoản này!"
+  already-authenticated: "§aBạn đã xác thực rồi!"
+  ip-limit-reached: "§cIP này đã đạt giới hạn tài khoản ({max})!"
+  ip-info-header: "§6=== Thông tin IP ==="
+  ip-info-ip: "§eIP: §f{ip}"
+  ip-info-accounts: "§eSố tài khoản: §f{count}"
+  ip-info-accounts-list: "§eDanh sách tài khoản:"
+  ip-info-account-name: "§7- {name}"

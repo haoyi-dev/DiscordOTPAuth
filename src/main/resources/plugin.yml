@@ -13,6 +13,10 @@ commands:
     description: Lệnh quản lý DiscordOTPAuth
     usage: /discordotp reload
     aliases: [dauth, discordauth]
+  ipcheck:
+    description: Kiểm tra thông tin IP và số tài khoản
+    usage: /ipcheck [ip]
+    aliases: [checkip, ipinfo]
 permissions:
   discordotp.reload:
     description: Cho phép reload DiscordOTPAuth plugin
@@ -20,3 +24,6 @@ permissions:
   discordotp.use:
     description: Cho phép sử dụng lệnh OTP
     default: true
+  discordotp.ipcheck:
+    description: Cho phép kiểm tra thông tin IP
+    default: op

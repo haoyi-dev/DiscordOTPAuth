@@ -1,5 +1,7 @@
 package haoyidev.discordotpauth;
 
+import haoyidev.discordotpauth.commands.IPCheckCommand;
+import haoyidev.discordotpauth.managers.IPManager;
 import haoyidev.discordotpauth.commands.OTPCommand;
 import haoyidev.discordotpauth.commands.ReloadCommand;
 import haoyidev.discordotpauth.listeners.PlayerJoinListener;
@@ -20,6 +22,7 @@ public final class DiscordOTPAuth extends JavaPlugin implements Listener {
     private ConfigManager configManager;
     private DiscordManager discordManager;
     private AuthManager authManager;
+    private IPManager ipManager;
 
     @Override
     public void onEnable() {
@@ -53,6 +56,12 @@ public final class DiscordOTPAuth extends JavaPlugin implements Listener {
                 getCommand("discordotp").setExecutor(new ReloadCommand(this));
             } else {
                 getLogger().warning("Câu lệnh 'discordotp' không tồn tại.");
+            }
+
+            if (getCommand("ipcheck") != null) {
+                getCommand("ipcheck").setExecutor(new IPCheckCommand(this));
+            } else {
+                getLogger().warning("Câu lệnh 'ipcheck' không tồn tại.");
             }
 
             registerEvents();
@@ -142,5 +151,9 @@ public final class DiscordOTPAuth extends JavaPlugin implements Listener {
 
     public AuthManager getAuthManager() {
         return authManager;
+    }
+
+    public IPManager getIpManager() {
+        return ipManager;
     }
 }
