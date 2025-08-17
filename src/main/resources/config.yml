@@ -1,0 +1,23 @@
+# Discord Bot Token
+discord:
+  bot-token: "YOUR_DISCORD_BOT_TOKEN_HERE"
+
+# Logging Configuration
+logging:
+  file-path: "plugins/DiscordOTPAuth/log/auth.log"
+
+# Cấu hình OTP
+otp:
+  # Độ dài của mã otp
+  length: 6  # Mặc định 6.
+  # Thời hạn hiệu lực của otp
+  expiration-minutes: 5 # Mặc định 5
+
+# Tin nhắn / thông báo
+messages:
+  kick-not-authenticated: "§cVui lòng sử dụng lệnh /otp send <discord_id> để đăng nhập!"
+  otp-sent: "§aĐã gửi mã OTP đến Discord của bạn! Vui lòng kiểm tra tin nhắn riêng."
+  otp-success: "§aXác thực thành công! Chào mừng đến với server."
+  otp-failed: "§cMã OTP không đúng! Vui lòng thử lại."
+  otp-expired: "§cMã OTP đã hết hạn!"
+  invalid-discord-id: "§cDiscord ID không hợp lệ! Vui lòng kiểm tra lại."
