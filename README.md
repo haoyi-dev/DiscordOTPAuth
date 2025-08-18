@@ -1,4 +1,4 @@
-# DiscordOTPAuth - Minecraft Plugin [ POJECT NÀY SHOP ĐÃ XÓA BỚT CÁC HÀM NÓ KHÔNG CHẠY ĐƯỢC NÊN AE ĐỪNG BUILD LÊN XÀI NHÉ. ĐỢI AD RA LẠI BẢN KHÁC ]
+# DiscordOTPAuth - Minecraft Plugin [ POJECT NÀY SHOP ĐÃ XÓA BỚT CÁC HÀM NÓ KHÔNG CHẠY ĐƯỢC NÊN AE ĐỪNG BUILD LÊN XÀI NHÉ. ĐỢI SHOP RA LẠI BẢN KHÁC NHÉ]
 
 Plugin đăng nhập bằng OTP qua Discord cho SvMC 1.21.1
 
