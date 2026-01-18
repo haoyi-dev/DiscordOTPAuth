@@ -1,24 +1,20 @@
-# Discord Bot Configuration
 discord:
   bot-token: "YOUR_BOT_TOKEN_HERE"
   channel-id: "YOUR_CHANNEL_ID_HERE"
   guild-id: "YOUR_GUILD_ID_HERE"
 
-# OTP Settings
 otp:
   code-length: 6
   expiration-minutes: 5
   max-attempts: 3
   cooldown-seconds: 30
 
-# IP Tracking Settings
 ip-tracking:
   enabled: true
   log-player-ips: true
   max-accounts-per-ip: 5
   alert-on-ip-limit: true
 
-# Messages
 messages:
   prefix: "§6[OTP] §r"
   no-permission: "§cBạn không có quyền sử dụng lệnh này!"
