@@ -1,7 +1,6 @@
 package haoyidev.discordotpauth.listeners;
 
 import haoyidev.discordotpauth.DiscordOTPAuth;
-import haoyidev.discordotpauth.managers.IPManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -23,7 +22,5 @@ public class PlayerJoinListener implements Listener {
             event.getPlayer().sendMessage("§6[OTP] $f/otp <mã_otp> -> Nhập mã OTP trong game");
             event.getPlayer().sendMessage("§6[OTP] $7Bạn sẽ bị giới hạn hành động cho đến khi xác thực!");
         }
-        IPManager ipManager = plugin.getIpManager();
-        ipManager.recordPlayerIP(event.getPlayer());
     }
 }
